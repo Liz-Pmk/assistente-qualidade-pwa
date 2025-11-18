@@ -1,301 +1,271 @@
-import React, { useEffect, useRef, useState } from 'react'
-
-const INITIAL_MESSAGES = [
-  {
-    from: 'bot',
-    text:
-      'Oi! Eu sou o Assistente IA da Qualidade. Posso te ajudar a explicar o fluxo, simular uma conversa com um auditor ou lembrar boas práticas antes de você começar.',
-    meta: 'Experiência premium e personalizada para times regulados.'
-  }
-]
-
-const QUICK_PROMPTS = [
-  'Como me preparar para uma auditoria?',
-  'Como preencher o checklist no app?',
-  'Qual valor para a professora?',
-  'Como compartilhar o resultado com o time?'
-]
-
-const BOT_RESPONSES = [
-  {
-    keywords: ['auditoria', 'inspeção', 'auditar'],
-    text:
-      'Comece revisando o histórico de checklists no painel. Veja quais itens tiveram recorrência de não conformidade, já combine ações corretivas e leve evidências fotográficas. Assim, na auditoria você mostra controle e ritmo de melhoria.',
-    meta: 'Dica: use o resumo com percentual de conformidade como trilha de conversa com o auditor.'
-  },
-  {
-    keywords: ['checklist', 'preencher', 'execução', 'responder'],
-    text:
-      'Abra o checklist do contexto certo (ex.: BPF Alimentos), avance item a item e marque Conforme, Não conforme ou Não se aplica. Quando marcar Não conforme descreva o motivo e, se possível, o prazo da correção.',
-    meta: 'O app foi desenhado para caber no polegar, com botões grandes e feedback visual imediato.'
-  },
-  {
-    keywords: ['professor', 'professora', 'trabalho'],
-    text:
-      'A professora consegue enxergar todo o raciocínio de UX: persona definida, dor mapeada, fluxo com 8 telas conectadas, escolhas mobile-first e camada conversacional para humanizar o onboarding.',
-    meta: 'Também evidenciamos o uso de Lean UX: hipótese + protótipo + mensuração rápida.'
-  },
-  {
-    keywords: ['compartilhar', 'time', 'whatsapp', 'envio'],
-    text:
-      'Assim que concluir o checklist, o resumo mostra o percentual de conformidade e os itens críticos. Um toque envia pelo WhatsApp para o grupo e outra cópia fica salva no histórico para auditorias futuras.',
-    meta: 'Evite planilhas dispersas: centralize no app e mantenha um storytelling único com o time.'
-  }
-]
-
-const DEFAULT_RESPONSE = {
-  text:
-    'Ótima pergunta! Como protótipo educacional, eu mostro como o app guia o usuário, reduz atrito e cria confiança. Pergunte sobre auditorias, UX ou o fluxo de checklist que eu explico melhor.',
-  meta: 'Sugestão: clique nos atalhos rápidos abaixo para ver respostas prontas.'
-}
+import React, { useState } from 'react'
 
 export default function Home({ onStartChecklist, onViewHistory }) {
   const [chatInput, setChatInput] = useState('')
-  const [chatMessages, setChatMessages] = useState(INITIAL_MESSAGES)
-  const [isTyping, setIsTyping] = useState(false)
-  const typingTimeout = useRef(null)
-
-  useEffect(() => {
-    return () => {
-      if (typingTimeout.current) {
-        clearTimeout(typingTimeout.current)
-      }
+  const [chatMessages, setChatMessages] = useState([
+    {
+      from: 'bot',
+      text:
+        'Oi! Eu sou o Assistente de Qualidade. Posso te explicar o trabalho acadêmico, as 8 telas do protótipo e como tudo se conecta à matriz da disciplina.'
     }
-  }, [])
-
-  const getBotResponse = (message) => {
-    const lower = message.toLowerCase()
-    return (
-      BOT_RESPONSES.find((item) =>
-        item.keywords.some((keyword) => lower.includes(keyword))
-      ) || DEFAULT_RESPONSE
-    )
-  }
-
-  const queueBotMessage = (message) => {
-    const response = getBotResponse(message)
-    if (typingTimeout.current) clearTimeout(typingTimeout.current)
-
-    setIsTyping(true)
-    typingTimeout.current = setTimeout(() => {
-      setChatMessages((prev) => [
-        ...prev,
-        { from: 'bot', text: response.text, meta: response.meta }
-      ])
-      setIsTyping(false)
-    }, 850)
-  }
-
-  const sendMessage = (text) => {
-    const trimmed = text.trim()
-    if (!trimmed) return
-
-    const userMessage = { from: 'user', text: trimmed }
-    setChatMessages((prev) => [...prev, userMessage])
-    setChatInput('')
-    queueBotMessage(trimmed)
-  }
+  ])
 
   const handleSend = (e) => {
     e.preventDefault()
-    sendMessage(chatInput)
-  }
+    if (!chatInput.trim()) return
 
-  const handlePromptClick = (prompt) => {
-    sendMessage(prompt)
-  }
+    const userText = chatInput.trim()
+    const lower = userText.toLowerCase()
+    const userMessage = { from: 'user', text: userText }
 
-  const stats = [
-    { value: '48', label: 'checklists/dia', detail: 'em uma planta média' },
-    { value: '92%', label: 'conformidade média', detail: 'na última inspeção' },
-    { value: '3 min', label: 'para fechar um checklist', detail: 'com atalhos e IA' }
-  ]
+    let botText =
+      'Posso comentar sobre: situação-problema, persona, concorrência, cada uma das 8 telas, matriz FGV, matriz UX ou como tudo isso ajuda na prática da qualidade.'
+
+    // Situação-problema / dor
+    if (lower.includes('situação') || lower.includes('problema') || lower.includes('dor')) {
+      botText =
+        'A situação-problema é a rotina de qualidade em indústrias de alimentos e fármacos com registros dispersos (papel, planilhas, mensagens), risco regulatório alto e dificuldade de se preparar para auditorias. O app organiza checklists, resumo e histórico em um fluxo único no celular.'
+    }
+
+    // Persona
+    else if (lower.includes('persona')) {
+      botText =
+        'A persona principal é a coordenadora de qualidade de uma indústria regulada, responsável por garantir conformidade com ANVISA/MAPA, organizar auditorias e treinar o time. Ela precisa de agilidade, centralização de dados e segurança na tomada de decisão antes de auditorias.'
+    }
+
+    // Concorrência
+    else if (lower.includes('concorrência') || lower.includes('concorrente')) {
+      botText =
+        'A concorrência inclui sistemas de gestão da qualidade mais complexos e planilhas personalizadas. O protótipo se posiciona como solução mobile-first, mais simples e focada em checklists de rotina, resumo rápido e compartilhamento via WhatsApp.'
+    }
+
+    // Matrizes
+    else if (lower.includes('matriz fgv') || lower.includes('rubrica') || lower.includes('avaliação')) {
+      botText =
+        'A matriz FGV avalia: organização formal, atendimento ao comando da questão, desenvolvimento do raciocínio, associação com a disciplina e articulação com a prática. A versão refinada do trabalho explicita a situação-problema, descreve solução, persona, concorrência e protótipo, conectando tudo à experiência real de qualidade.'
+    } else if (lower.includes('matriz ux') || lower.includes('matriz do projeto') || lower.includes('matriz de ux')) {
+      botText =
+        'Na matriz UX do projeto, o protótipo é mapeado para: contextualização da dor, definição da solução, análise de concorrência, persona, protótipo navegável (8 telas) e uso de PWA/IA para apoiar a experiência do usuário e o aprendizado na disciplina.'
+    }
+
+    // Telas específicas
+    else if (lower.includes('tela inicial') || lower.includes('home') || lower.includes('primeira tela')) {
+      botText =
+        'A tela inicial apresenta o nome do app, a dor do público-alvo, um resumo da solução, os links para começar o checklist ou ver histórico e, nesta versão, um resumo do trabalho e das matrizes, além do chatbot para tirar dúvidas da professora e da persona.'
+    } else if (lower.includes('login')) {
+      botText =
+        'A tela de login garante acesso individualizado. Na prática, para o trabalho, ela mostra que o protótipo respeita o requisito mínimo de cadastro (usuario/senha) mencionado pela professora e reflete um cenário básico de segurança e rastreabilidade.'
+    } else if (lower.includes('dashboard') || lower.includes('painel')) {
+      botText =
+        'O dashboard sintetiza as ações principais: iniciar novo checklist, ver histórico e visualizar indicadores simples (checklists concluídos, não conformidades e tempo médio). Ele conecta a teoria de UX (foco em tarefas principais) com a prática da coordenadora de qualidade.'
+    } else if (lower.includes('contexto') || lower.includes('selecionar contexto')) {
+      botText =
+        'A tela de seleção de contexto pede planta e linha/setor. Ela operacionaliza a necessidade de contextualizar os dados de inspeção, permitindo que, na prática, os registros sejam filtrados por área da fábrica e usados em auditorias e relatórios.'
+    } else if (lower.includes('lista de checklist') || lower.includes('lista de checklists') || lower.includes('checklist') && lower.includes('lista')) {
+      botText =
+        'A lista de checklists apresenta opções como BPF Alimentos (ANVISA/MAPA), BPF Fármacos (ANVISA) e Limpeza. Ela traduz a teoria em listas concretas, ligadas à regulação vigente, e permite testar a usabilidade de seleção pelo usuário.'
+    } else if (lower.includes('execução') || lower.includes('rodar checklist') || lower.includes('preencher checklist')) {
+      botText =
+        'A tela de execução do checklist exibe itens como área limpa, temperatura, EPIs e identificação de matérias-primas. A prática é marcar conforme/não conforme e usar observações. Essa tela é o “coração” da solução, pois responde diretamente à dor de registrar inspeções de forma rápida.'
+    } else if (lower.includes('resumo') || lower.includes('summary')) {
+      botText =
+        'A tela de resumo calcula itens avaliados, conformes e percentual de conformidade. Ela permite compartilhar o resultado via WhatsApp, unindo o requisito omnichannel com a necessidade prática de comunicar rapidamente achados ao time ou à gestão.'
+    } else if (lower.includes('histórico') || lower.includes('historico')) {
+      botText =
+        'A tela de histórico mostra checklists anteriores com data e percentual de conformidade. Ela materializa a articulação entre teoria e prática: serve tanto para aprendizado (ver exemplos) quanto para preparar auditorias futuras.'
+    }
+
+    // Perguntas sobre "como usar as 8 telas na prática"
+    else if (lower.includes('como usar') || lower.includes('aplicação prática') || lower.includes('como funciona tudo') || lower.includes('8 telas')) {
+      botText =
+        'Na prática: 1) você acessa a HOME e entende o contexto; 2) faz LOGIN; 3) no DASHBOARD, escolhe “Novo checklist”; 4) define o CONTEXTO (planta/linha); 5) escolhe o CHECKLIST; 6) EXECUTA item a item; 7) vê o RESUMO, compartilha se quiser pelo WhatsApp; 8) depois consulta o HISTÓRICO. Esse fluxo completo demonstra a aplicação dos conceitos de UX e responde ponto a ponto à matriz da atividade.'
+    }
+
+    // Dúvidas da professora especificamente
+    else if (lower.includes('professora') || lower.includes('professor') || lower.includes('neila')) {
+      botText =
+        'Para a professora, esta versão evidencia: a situação-problema (dor da persona), a solução proposta (fluxo mobile-first com 8 telas), a concorrência, a persona, a justificativa teórica e a articulação com a prática da qualidade. A HOME inclui duas matrizes: a matrizada avaliação FGV e uma matriz do projeto, mapeando cada tela e decisão de UX aos critérios da disciplina.'
+    }
+
+    const botMessage = { from: 'bot', text: botText }
+
+    setChatMessages((prev) => [...prev, userMessage, botMessage])
+    setChatInput('')
+  }
 
   return (
-    <main className="home-layout">
-      <section className="hero card">
-        <div className="hero-content">
-          <p className="eyebrow">Assistente Omnichannel</p>
-          <h1>
-            Qualidade premium com um chatbot que guia cada inspeção e
-            storytelling para auditorias.
-          </h1>
-          <p className="hero-subtitle">
-            Um fluxo completo, mobile-first e conversacional para coordenadoras
-            de qualidade em alimentos e fármacos. Integra checklist, resumo,
-            histórico e envio instantâneo.
-          </p>
-          <div className="hero-actions">
-            <button onClick={onStartChecklist}>Começar checklist</button>
-            <button className="secondary" onClick={onViewHistory}>
-              Ver histórico
-            </button>
-          </div>
-        </div>
-        <div className="hero-highlight">
-          <p>Fluxo em 8 telas</p>
-          <strong>Login • Painel • Contexto • Checklist • Resumo • Histórico</strong>
-          <span>+ Camada IA para onboarding e defesa do projeto.</span>
+    <main>
+      {/* HERO DO APP */}
+      <section>
+        <h1>Assistente de Qualidade Omnichannel</h1>
+        <p>
+          Protótipo mobile-first em formato PWA para apoiar equipes de qualidade
+          em indústrias reguladas (Alimentos – ANVISA/MAPA e Fármacos – ANVISA),
+          centralizando checklists, resumos e histórico.
+        </p>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <button onClick={onStartChecklist}>Começar checklist</button>
+          <button className="secondary" onClick={onViewHistory}>
+            Ver histórico
+          </button>
         </div>
       </section>
 
-      <section className="insights-grid">
-        {stats.map((stat) => (
-          <article key={stat.label} className="stat-card card">
-            <div className="stat-value">{stat.value}</div>
-            <div className="stat-label">{stat.label}</div>
-            <p>{stat.detail}</p>
-          </article>
-        ))}
-      </section>
-
-      <section className="chat-wrapper">
-        <div className="chat-panel card">
-          <header className="chat-header">
-            <div>
-              <p className="eyebrow">Chat interativo</p>
-              <h2>Assistente IA da Qualidade</h2>
-              <p>
-                Faça perguntas em linguagem natural. Eu traduzo a metodologia,
-                sugiro boas práticas e preparo você para a reunião com a
-                professora ou com o auditor.
-              </p>
-            </div>
-            <div className="chat-suggestions">
-              {QUICK_PROMPTS.map((prompt) => (
-                <button key={prompt} type="button" onClick={() => handlePromptClick(prompt)}>
-                  {prompt}
-                </button>
-              ))}
-            </div>
-          </header>
-
-          <div className="chat-box premium">
-            {chatMessages.map((msg, index) => (
-              <div
-                key={index}
-                className={`chat-message ${msg.from === 'user' ? 'align-right' : ''}`}
-              >
-                <div
-                  className={`chat-bubble ${msg.from === 'user' ? 'user' : 'bot'}`}
-                >
-                  <p>{msg.text}</p>
-                  {msg.meta && <span className="chat-meta">{msg.meta}</span>}
-                </div>
-              </div>
-            ))}
-            {isTyping && (
-              <div className="chat-message">
-                <div className="chat-bubble bot typing">
-                  <span className="typing-dot" />
-                  <span className="typing-dot" />
-                  <span className="typing-dot" />
-                </div>
-              </div>
-            )}
-          </div>
-
-          <form className="chat-input" onSubmit={handleSend}>
-            <input
-              type="text"
-              placeholder="Digite sua pergunta..."
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-            />
-            <button type="submit">Enviar</button>
-          </form>
-        </div>
-
-        <aside className="assistant-card card">
-          <p className="eyebrow">Para a professora</p>
-          <h3>
-            Mostramos dor, solução, métricas e justificativa de UX em uma única
-            narrativa.
-          </h3>
-          <ul>
-            <li>Persona: coordenadora de qualidade regulada pela Anvisa.</li>
-            <li>Dor: registros dispersos, risco regulatório e retrabalho.</li>
-            <li>
-              Solução: fluxo de 8 telas + IA para onboarding e storytelling do
-              projeto.
-            </li>
-            <li>
-              Provas: histórico, percentuais e timeline para auditorias e para a
-              banca.
-            </li>
-          </ul>
-          <div className="prof-badge">
-            <span>FGV / UX</span>
-            <p>Prototipado com Lean UX e entregue como PWA mobile-first.</p>
-          </div>
-        </aside>
-      </section>
-
-      <section className="card grid-two">
-        <div>
-          <div className="card-header">A dor do dia a dia</div>
-          <p>
-            Para equipes de qualidade em indústrias de alimentos e fármacos é
-            comum:
-          </p>
-          <ul>
-            <li>Ter checklists espalhados em papel e planilhas.</li>
-            <li>Perder tempo procurando registros antigos.</li>
-            <li>Ficar inseguro na véspera de uma auditoria.</li>
-            <li>Ter que explicar tudo por WhatsApp e e-mail.</li>
-          </ul>
-        </div>
-        <div>
-          <div className="card-header">Como o app ajuda</div>
-          <ul>
-            <li>Acessar checklists padronizados no celular.</li>
-            <li>Marcar conforme / não conforme em poucos toques.</li>
-            <li>Ver um resumo com o percentual de conformidade.</li>
-            <li>Enviar o resultado pelo WhatsApp para o time.</li>
-            <li>Guardar o histórico para futuras auditorias.</li>
-          </ul>
-        </div>
-      </section>
-
+      {/* RESUMO DO TRABALHO ACADÊMICO */}
       <section className="card">
-        <div className="card-header">Passo a passo rápido</div>
-        <ol className="timeline">
-          <li>
-            Você faz login com e-mail e senha e já vê indicadores em destaque.
-          </li>
-          <li>Escolhe a planta e a linha/setor que será inspecionada.</li>
-          <li>Seleciona o checklist adequado (ex.: BPF Alimentos).</li>
-          <li>Responde item a item com apoio da IA para dúvidas pontuais.</li>
-          <li>
-            No fim, vê o resumo, compartilha via WhatsApp e salva no histórico.
-          </li>
+        <div className="card-header">Resumo do trabalho (FGV – UX e Plataformas Digitais)</div>
+        <p style={{ fontSize: '0.9rem' }}>
+          Este protótipo foi desenvolvido como atividade individual da disciplina
+          UX: User Experience e Plataformas Digitais. O objetivo é demonstrar, na
+          prática, o ciclo completo de UX: contextualização da situação-problema,
+          definição da solução, análise de concorrência, persona, protótipo
+          navegável (8 telas) e justificativa teórica aplicada à rotina de
+          qualidade em indústrias reguladas.
+        </p>
+      </section>
+
+      {/* SITUAÇÃO-PROBLEMA / DOR */}
+      <section className="card">
+        <div className="card-header">Situação-problema: dor do público-alvo</div>
+        <p style={{ fontSize: '0.9rem' }}>
+          A coordenadora de qualidade convive com checklists em papel, planilhas
+          fragmentadas e registros dispersos em e-mails e mensagens. Na véspera
+          de auditorias (internas ou externas), há risco de não encontrar
+          evidências, de repetir erros já identificados e de não conseguir
+          mostrar uma visão consolidada de conformidade.
+        </p>
+        <p style={{ fontSize: '0.9rem' }}>
+          O app proposto centraliza checklists padronizados, resumo de
+          conformidade e histórico em um fluxo único, acessível pelo celular, com
+          possibilidade de compartilhar resultados via WhatsApp.
+        </p>
+      </section>
+
+      {/* RESUMO DAS 8 TELAS */}
+      <section className="card">
+        <div className="card-header">Fluxo das 8 telas do protótipo</div>
+        <ol style={{ paddingLeft: '18px', fontSize: '0.9rem' }}>
+          <li><strong>Home:</strong> apresenta a dor, a solução, o resumo do trabalho, matrizes e chatbot.</li>
+          <li><strong>Login:</strong> acesso com e-mail e senha (demonstração para a professora).</li>
+          <li><strong>Dashboard:</strong> ações principais (novo checklist, histórico, visão do dia).</li>
+          <li><strong>Selecionar contexto:</strong> escolha de planta e linha/setor da inspeção.</li>
+          <li><strong>Lista de checklists:</strong> BPF Alimentos (ANVISA/MAPA), BPF Fármacos (ANVISA), Limpeza.</li>
+          <li><strong>Execução do checklist:</strong> marcação conforme/não conforme e observações.</li>
+          <li><strong>Resumo:</strong> cálculo de conformidade e compartilhamento via WhatsApp.</li>
+          <li><strong>Histórico:</strong> visão de checklists realizados, datas e percentuais de conformidade.</li>
         </ol>
       </section>
 
+      {/* MATRIZ 1 – RUBRICA FGV */}
       <section className="card">
-        <div className="card-header">Fontes dos dados (para estudos)</div>
-        <p>
-          Os exemplos de indicadores e relatórios usados neste app são
-          didáticos, mas foram inspirados em documentos públicos de órgãos
-          oficiais, como:
+        <div className="card-header">Matriz 1 – Rubrica da atividade (FGV)</div>
+        <p style={{ fontSize: '0.9rem' }}>
+          A rubrica utilizada na correção do trabalho considera quatro eixos
+          principais:
         </p>
-        <ul>
+        <ul style={{ paddingLeft: '18px', fontSize: '0.9rem' }}>
           <li>
-            Relatório de Gestão 2022 da Anvisa, que registra 576 registros
-            concedidos de medicamentos e produtos biológicos, 88 registros de
-            alimentos e 261 alertas sanitários emitidos no ano.
+            <strong>Aspectos formais (organização):</strong> estrutura do trabalho,
+            organização e aderência ao modelo proposto.
           </li>
           <li>
-            Relatórios de atividades da área de alimentos e de monitoramento
-            pós-mercado da Anvisa, com dados sobre inspeções e alertas
-            sanitários.
+            <strong>Atendimento ao comando da questão:</strong> resposta clara aos
+            itens solicitados na matriz da disciplina (contextualização, solução,
+            concorrência, persona, protótipo).
+          </li>
+          <li>
+            <strong>Desenvolvimento do raciocínio:</strong> profundidade da
+            explicação, qualidade da análise e conexão entre as partes.
+          </li>
+          <li>
+            <strong>Associação às temáticas da disciplina:</strong> uso de
+            conceitos de UX e material complementar, além da articulação com a
+            prática profissional.
           </li>
         </ul>
-        <p>
-          No trabalho acadêmico, esses documentos são citados formalmente nas
-          referências. No app, eles reforçam a importância de registrar bem as
-          rotinas de qualidade.
+        <p style={{ fontSize: '0.9rem' }}>
+          Esta versão do protótipo busca evidenciar explicitamente cada um desses
+          critérios na própria interface, facilitando a avaliação pela docente.
         </p>
+      </section>
+
+      {/* MATRIZ 2 – MATRIZ DO PROJETO UX */}
+      <section className="card">
+        <div className="card-header">Matriz 2 – Projeto UX & Plataformas Digitais</div>
+        <p style={{ fontSize: '0.9rem' }}>
+          A matriz do projeto UX relaciona elementos do trabalho com o protótipo:
+        </p>
+        <ul style={{ paddingLeft: '18px', fontSize: '0.9rem' }}>
+          <li>
+            <strong>Contextualização da dor:</strong> apresentada na HOME e detalhada
+            no texto de situação-problema.
+          </li>
+          <li>
+            <strong>Descrição da solução:</strong> fluxo das 8 telas e resumo na HOME,
+            mostrando como o app atende a necessidade da persona.
+          </li>
+          <li>
+            <strong>Análise de concorrência:</strong> comparações com sistemas de
+            gestão da qualidade e planilhas, reforçando o diferencial mobile-first.
+          </li>
+          <li>
+            <strong>Persona:</strong> coordenadora de qualidade, articulada às rotinas
+            regulatórias e à preparação para auditorias.
+          </li>
+          <li>
+            <strong>Protótipo navegável:</strong> 8 telas implementadas, com PWA,
+            facilitando uso em smartphone.
+          </li>
+          <li>
+            <strong>Aplicação de IA:</strong> chatbot educacional na HOME para apoiar
+            uso do app e explicitar a ponte entre teoria e prática.
+          </li>
+        </ul>
+      </section>
+
+      {/* CHATBOT REFINADO */}
+      <section className="card">
+        <div className="card-header">Chatbot – aplicação prática das 8 telas</div>
+        <p style={{ fontSize: '0.9rem' }}>
+          Faça perguntas em linguagem simples, como: “qual a situação-problema?”,
+          “o que a tela de resumo mostra?”, “como o fluxo das 8 telas responde à
+          matriz FGV?” ou “como isso ajuda na auditoria?”.
+        </p>
+        <div className="chat-box">
+          {chatMessages.map((msg, i) => (
+            <div
+              key={i}
+              className="chat-message"
+              style={{ textAlign: msg.from === 'user' ? 'right' : 'left' }}
+            >
+              <span
+                className={
+                  'chat-bubble ' + (msg.from === 'user' ? 'user' : 'bot')
+                }
+              >
+                {msg.text}
+              </span>
+            </div>
+          ))}
+        </div>
+        <form
+          onSubmit={handleSend}
+          style={{ display: 'flex', gap: '8px', marginTop: '8px' }}
+        >
+          <input
+            type="text"
+            placeholder="Digite sua pergunta sobre o app ou a matriz..."
+            value={chatInput}
+            onChange={(e) => setChatInput(e.target.value)}
+            style={{
+              flex: 1,
+              padding: '6px 8px',
+              borderRadius: '8px',
+              border: '1px solid #e2e8f0'
+            }}
+          />
+          <button type="submit">Enviar</button>
+        </form>
       </section>
     </main>
   )
