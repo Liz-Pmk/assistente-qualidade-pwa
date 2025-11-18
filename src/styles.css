@@ -1,0 +1,112 @@
+:root {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #0f172a;
+  background-color: #f8fafc;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.app-shell {
+  min-height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0 0 8px;
+}
+
+p {
+  margin: 0 0 8px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #0f172a;
+  color: #ffffff;
+}
+
+button.secondary {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+section.card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.08);
+}
+
+.card-header {
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 0.95rem;
+}
+
+.badge-prof {
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: #e0f2fe;
+  color: #0f172a;
+  margin-left: 4px;
+}
+
+.chat-box {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+  background: #f8fafc;
+}
+
+.chat-message {
+  margin-bottom: 6px;
+}
+
+.chat-bubble {
+  display: inline-block;
+  padding: 6px 8px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+}
+
+.chat-bubble.bot {
+  background: #e2e8f0;
+}
+
+.chat-bubble.user {
+  background: #e0f2fe;
+}
+
+@media (min-width: 600px) {
+  .app-shell {
+    padding: 24px;
+  }
+}
