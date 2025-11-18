@@ -27,26 +27,31 @@ const SCREEN_TITLES = {
 const CHECKLIST_OPTIONS = [
   {
     titulo: 'BPF – Boas Práticas de Fabricação',
-    descricao: 'Higiene, fluxo de pessoas, documentação.'
+    descricao: 'Higiene, fluxo de pessoas, documentação.',
+    arquivo: '/pdfs/checklist-bpf-alimentos.pdf'
   },
   {
     titulo: 'Rotulagem e Impressão',
-    descricao: 'Validade, lote, alergênicos, idioma.'
+    descricao: 'Validade, lote, alergênicos, idioma.',
+    arquivo: '/pdfs/checklist-bpf-farmacos.pdf'
   },
   {
     titulo: 'Rastreabilidade e Lote',
-    descricao: 'Registros de produção, devoluções, recalls.'
+    descricao: 'Registros de produção, devoluções, recalls.',
+    arquivo: '/pdfs/checklist-limpeza-sanitizacao.pdf'
   }
 ]
 
 const FICHAS_EXEMPLO = [
   {
     titulo: 'Ficha – Tinta Datadora XY-100',
-    descricao: 'Condições de uso, compatibilidade, validade.'
+    descricao: 'Condições de uso, compatibilidade, validade.',
+    arquivo: '/pdfs/ficha-tecnica-tinta-xy100.pdf'
   },
   {
     titulo: 'Ficha – Embalagem Primária Z-20',
-    descricao: 'Barreiras, temperatura, contato com alimento.'
+    descricao: 'Barreiras, temperatura, contato com alimento.',
+    arquivo: '/pdfs/ficha-tecnica-embalagem-z20.pdf'
   }
 ]
 
@@ -202,7 +207,9 @@ export default function MobilePrototype() {
             <p className="list-title">{item.titulo}</p>
             <p className="list-desc">{item.descricao}</p>
           </div>
-          <span className="badge">PDF</span>
+          <a className="badge-link" href={item.arquivo} target="_blank" rel="noreferrer">
+            PDF
+          </a>
         </article>
       ))}
     </div>
@@ -216,7 +223,9 @@ export default function MobilePrototype() {
             <p className="list-title">{item.titulo}</p>
             <p className="list-desc">{item.descricao}</p>
           </div>
-          <span className="badge">Ficha</span>
+          <a className="badge-link" href={item.arquivo} target="_blank" rel="noreferrer">
+            Ficha
+          </a>
         </article>
       ))}
     </div>

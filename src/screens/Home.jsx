@@ -1,6 +1,29 @@
 import React, { useState } from 'react'
 import MobilePrototype from '../components/MobilePrototype'
 
+const DOCUMENTS = [
+  {
+    label: 'Checklist BPF – Alimentos (ANVISA/MAPA)',
+    file: '/pdfs/checklist-bpf-alimentos.pdf'
+  },
+  {
+    label: 'Checklist BPF – Fármacos (ANVISA)',
+    file: '/pdfs/checklist-bpf-farmacos.pdf'
+  },
+  {
+    label: 'Checklist Limpeza e Sanitização',
+    file: '/pdfs/checklist-limpeza-sanitizacao.pdf'
+  },
+  {
+    label: 'Ficha Técnica – Tinta Datadora XY-100',
+    file: '/pdfs/ficha-tecnica-tinta-xy100.pdf'
+  },
+  {
+    label: 'Ficha Técnica – Embalagem Primária Z-20',
+    file: '/pdfs/ficha-tecnica-embalagem-z20.pdf'
+  }
+]
+
 export default function Home({ onStartChecklist, onViewHistory }) {
   const [chatInput, setChatInput] = useState('')
   const [chatMessages, setChatMessages] = useState([
@@ -201,6 +224,24 @@ export default function Home({ onStartChecklist, onViewHistory }) {
           conformidade e histórico em um fluxo único, acessível pelo celular, com
           possibilidade de compartilhar resultados via WhatsApp.
         </p>
+      </section>
+
+      <section className="card">
+        <div className="card-header">Documentos e PDFs já disponíveis</div>
+        <p style={{ fontSize: '0.9rem', marginBottom: '12px' }}>
+          Os arquivos abaixo acompanham o protótipo para que a professora e a persona possam baixar os checklists e fichas
+          diretamente do PWA sem depender de anexos externos.
+        </p>
+        <ul className="document-list">
+          {DOCUMENTS.map((doc) => (
+            <li key={doc.file}>
+              <span>{doc.label}</span>
+              <a href={doc.file} target="_blank" rel="noreferrer">
+                Baixar PDF
+              </a>
+            </li>
+          ))}
+        </ul>
       </section>
 
       {/* EMPRESA EXEMPLO */}
