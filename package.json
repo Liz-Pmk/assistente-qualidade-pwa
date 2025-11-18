@@ -7,7 +7,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "build": "node ./node_modules/expo/bin/cli.js export --platform web"
   },
   "dependencies": {
     "@react-navigation/native": "^6.1.18",
