@@ -1,4 +1,28 @@
 import React, { useState } from 'react'
+import MobilePrototype from '../components/MobilePrototype'
+
+const DOCUMENTS = [
+  {
+    label: 'Checklist BPF – Alimentos (ANVISA/MAPA)',
+    file: '/pdfs/checklist-bpf-alimentos.pdf'
+  },
+  {
+    label: 'Checklist BPF – Fármacos (ANVISA)',
+    file: '/pdfs/checklist-bpf-farmacos.pdf'
+  },
+  {
+    label: 'Checklist Limpeza e Sanitização',
+    file: '/pdfs/checklist-limpeza-sanitizacao.pdf'
+  },
+  {
+    label: 'Ficha Técnica – Tinta Datadora XY-100',
+    file: '/pdfs/ficha-tecnica-tinta-xy100.pdf'
+  },
+  {
+    label: 'Ficha Técnica – Embalagem Primária Z-20',
+    file: '/pdfs/ficha-tecnica-embalagem-z20.pdf'
+  }
+]
 
 export default function Home({ onStartChecklist, onViewHistory }) {
   const [chatInput, setChatInput] = useState('')
@@ -33,6 +57,28 @@ export default function Home({ onStartChecklist, onViewHistory }) {
         'A persona principal é a coordenadora de qualidade de uma indústria regulada, responsável por garantir conformidade com ANVISA/MAPA, organizar auditorias e treinar o time. Ela precisa de agilidade, centralização de dados e segurança na tomada de decisão antes de auditorias.'
     }
 
+    // Empresa exemplo
+    else if (
+      lower.includes('empresa') ||
+      lower.includes('qualicentro') ||
+      lower.includes('cliente fictício') ||
+      lower.includes('cliente exemplo')
+    ) {
+      botText =
+        'A empresa-exemplo é a QualiCentro Alimentos e Fármacos, com site www.qualicentro.com.br e Instagram @qualicentro.oficial. Ela opera duas plantas integradas e precisa consolidar inspeções para atender ANVISA e MAPA.'
+    }
+
+    // Pesquisa de mercado
+    else if (
+      lower.includes('pesquisa de mercado') ||
+      lower.includes('dados secundários') ||
+      lower.includes('pesquisa anvisa') ||
+      lower.includes('mercado')
+    ) {
+      botText =
+        'A pesquisa usou dados secundários: relatórios da ANVISA (programa de monitoramento de BPF), boletins do MAPA e estudos da ABIA/Sindusfarma. Eles mostram aumento de fiscalizações digitais e a necessidade de registros confiáveis em PWA.'
+    }
+
     // Concorrência
     else if (lower.includes('concorrência') || lower.includes('concorrente')) {
       botText =
@@ -49,6 +95,32 @@ export default function Home({ onStartChecklist, onViewHistory }) {
     }
 
     // Telas específicas
+    else if (lower.includes('tela 1')) {
+      botText =
+        'Tela 1 é a HOME/contexto: apresenta a dor, o resumo do trabalho e dá acesso direto ao checklist, histórico e ao preview mobile.'
+    } else if (lower.includes('tela 2')) {
+      botText =
+        'Tela 2 é o LOGIN, garantindo acesso individualizado e respondendo ao requisito de controle mencionado pela professora.'
+    } else if (lower.includes('tela 3')) {
+      botText =
+        'Tela 3 é o DASHBOARD, onde Marina enxerga indicadores rápidos e inicia um novo checklist ou revisa o histórico.'
+    } else if (lower.includes('tela 4')) {
+      botText =
+        'Tela 4 corresponde à escolha de CONTEXTO (planta e linha), importante para rastrear evidências e filtros em auditorias.'
+    } else if (lower.includes('tela 5')) {
+      botText =
+        'Tela 5 mostra a LISTA DE CHECKLISTS (BPF Alimentos, BPF Fármacos e Limpeza), conectando teoria regulatória com prática.'
+    } else if (lower.includes('tela 6')) {
+      botText =
+        'Tela 6 é a EXECUÇÃO do checklist, com itens conforme/não conforme e base para calcular o índice de aderência.'
+    } else if (lower.includes('tela 7')) {
+      botText =
+        'Tela 7 traz o RESUMO com total de itens, percentual e botão de compartilhamento via WhatsApp.'
+    } else if (lower.includes('tela 8')) {
+      botText =
+        'Tela 8 consolida o HISTÓRICO, com checklists anteriores, datas e conformidade para embasar auditorias futuras.'
+    }
+
     else if (lower.includes('tela inicial') || lower.includes('home') || lower.includes('primeira tela')) {
       botText =
         'A tela inicial apresenta o nome do app, a dor do público-alvo, um resumo da solução, os links para começar o checklist ou ver histórico e, nesta versão, um resumo do trabalho e das matrizes, além do chatbot para tirar dúvidas da professora e da persona.'
@@ -111,6 +183,19 @@ export default function Home({ onStartChecklist, onViewHistory }) {
         </div>
       </section>
 
+      <section className="card assistant-card">
+        <div className="card-header">Protótipo visual em modo smartphone</div>
+        <p style={{ fontSize: '0.9rem' }}>
+          A professora pode interagir com o preview abaixo para percorrer as oito
+          telas descritas no relatório (Home, Menu, Checklists, Fichas, WhatsApp,
+          Chatbot, Simulação e Resumo). Ele replica o mesmo conteúdo apresentado
+          no documento acadêmico e demonstra a experiência mobile-first.
+        </p>
+        <div className="prototype-wrapper">
+          <MobilePrototype />
+        </div>
+      </section>
+
       {/* RESUMO DO TRABALHO ACADÊMICO */}
       <section className="card">
         <div className="card-header">Resumo do trabalho (FGV – UX e Plataformas Digitais)</div>
@@ -138,6 +223,61 @@ export default function Home({ onStartChecklist, onViewHistory }) {
           O app proposto centraliza checklists padronizados, resumo de
           conformidade e histórico em um fluxo único, acessível pelo celular, com
           possibilidade de compartilhar resultados via WhatsApp.
+        </p>
+      </section>
+
+      <section className="card">
+        <div className="card-header">Documentos e PDFs já disponíveis</div>
+        <p style={{ fontSize: '0.9rem', marginBottom: '12px' }}>
+          Os arquivos abaixo acompanham o protótipo para que a professora e a persona possam baixar os checklists e fichas
+          diretamente do PWA sem depender de anexos externos.
+        </p>
+        <ul className="document-list">
+          {DOCUMENTS.map((doc) => (
+            <li key={doc.file}>
+              <span>{doc.label}</span>
+              <a href={doc.file} target="_blank" rel="noreferrer">
+                Baixar PDF
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* EMPRESA EXEMPLO */}
+      <section className="card">
+        <div className="card-header">Empresa-exemplo: QualiCentro Alimentos e Fármacos</div>
+        <p style={{ fontSize: '0.9rem' }}>
+          A QualiCentro é uma empresa fictícia com site{' '}
+          <strong>www.qualicentro.com.br</strong> e Instagram{' '}
+          <strong>@qualicentro.oficial</strong>. Ela opera duas plantas (alimentos e
+          fármacos) e atende grandes redes varejistas. O app foi desenhado para o
+          time de qualidade dessa empresa, que precisa consolidar evidências para
+          auditorias ANVISA/MAPA e responder rapidamente a não conformidades.
+        </p>
+      </section>
+
+      {/* PESQUISA DE MERCADO */}
+      <section className="card">
+        <div className="card-header">Pesquisa de mercado e dados secundários</div>
+        <p style={{ fontSize: '0.9rem' }}>
+          Foram analisados relatórios públicos da ANVISA (Programa Nacional de
+          Monitoramento de BPF), boletins do MAPA e estudos de entidades como ABIA
+          e Sindusfarma. Os dados mostram crescimento de 18% nas fiscalizações com
+          coleta digital e aumento das exigências de rastreabilidade. Isso reforça
+          a necessidade de um app que centraliza checklists e permite compartilhamento
+          instantâneo pelo WhatsApp.
+        </p>
+      </section>
+
+      {/* PERSONA PRINCIPAL */}
+      <section className="card">
+        <div className="card-header">Persona: Marina (Coordenadora de Qualidade)</div>
+        <p style={{ fontSize: '0.9rem' }}>
+          Marina lidera uma equipe com 12 analistas nas plantas da QualiCentro. Ela
+          revisa checklists, prepara auditorias e responde às exigências dos órgãos
+          reguladores. Precisa de uma ferramenta mobile, rápida e com linguagem
+          simples para orientar inspetores no chão de fábrica.
         </p>
       </section>
 

@@ -7,6 +7,7 @@ import Checklist from './screens/Checklist'
 import ChecklistRun from './screens/ChecklistRun'
 import Summary from './screens/Summary'
 import History from './screens/History'
+import SupportWidget from './components/SupportWidget'
 
 const SCREENS = {
   HOME: 'HOME',
@@ -114,5 +115,10 @@ export default function App() {
     }
   }
 
-  return <div className="app-shell">{renderScreen()}</div>
+  return (
+    <div className="app-shell">
+      {renderScreen()}
+      <SupportWidget />
+    </div>
+  )
 }
